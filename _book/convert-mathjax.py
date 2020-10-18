@@ -22,4 +22,4 @@ def rewrite(src, dst):
         fo.write(content)
         fo.close()
 
-rewrite('./computer-vision/wocao.md', './computer-vision/DCNN.md')
+rewrite('./test.md', './test.md')
