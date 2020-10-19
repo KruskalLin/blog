@@ -1,0 +1,611 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>stereo matching · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="lidar-fusion.html" />
+    
+    
+    <link rel="prev" href="lane-detection.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="divider"></li>
+        
+        
+    
+        <li class="chapter " data-level="2.1" data-path="../statistics/">
+            
+                <a href="../statistics/">
+            
+                    
+                    STATISTICS
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.1.1" data-path="../statistics/statistics-using-R.html">
+            
+                <a href="../statistics/statistics-using-R.html">
+            
+                    
+                    statistics using R
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.1.2" data-path="../statistics/statistics-formulas.html">
+            
+                <a href="../statistics/statistics-formulas.html">
+            
+                    
+                    statistics formulas
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="divider"></li>
+        
+        
+    
+        <li class="chapter " data-level="3.1" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    COMPUTER VISION
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="3.1.1" data-path="lane-detection.html">
+            
+                <a href="lane-detection.html">
+            
+                    
+                    lane detection
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="3.1.2" data-path="stereo-matching.html">
+            
+                <a href="stereo-matching.html">
+            
+                    
+                    stereo matching
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.1.3" data-path="lidar-fusion.html">
+            
+                <a href="lidar-fusion.html">
+            
+                    
+                    lidar fusion
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.1.4" data-path="segmentation.html">
+            
+                <a href="segmentation.html">
+            
+                    
+                    segmentation
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.1.5" data-path="DCNN.html">
+            
+                <a href="DCNN.html">
+            
+                    
+                    DCNN
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="divider"></li>
+        
+        
+    
+        <li class="chapter " data-level="4.1" data-path="../data-mining/">
+            
+                <a href="../data-mining/">
+            
+                    
+                    DATA MINING
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="4.1.1" data-path="../data-mining/text-mining-procedure.html">
+            
+                <a href="../data-mining/text-mining-procedure.html">
+            
+                    
+                    text mining procedure
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="divider"></li>
+        
+        
+    
+        <li class="chapter " data-level="5.1" data-path="../neural-network/">
+            
+                <a href="../neural-network/">
+            
+                    
+                    NEURAL NETWORK
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="5.1.1" data-path="../neural-network/neural-network.html">
+            
+                <a href="../neural-network/neural-network.html">
+            
+                    
+                    neural network
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.1.2" data-path="../neural-network/nonconvex-optimization.html">
+            
+                <a href="../neural-network/nonconvex-optimization.html">
+            
+                    
+                    nonconvex optimization
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.1.3" data-path="../neural-network/neural-attack.html">
+            
+                <a href="../neural-network/neural-attack.html">
+            
+                    
+                    neural attack
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="divider"></li>
+        
+        
+    
+        <li class="chapter " data-level="6.1" data-path="../miscellaneous/">
+            
+                <a href="../miscellaneous/">
+            
+                    
+                    MISCELLANEOUS
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="6.1.1" data-path="../miscellaneous/images-loading.html">
+            
+                <a href="../miscellaneous/images-loading.html">
+            
+                    
+                    images loading
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.2" data-path="../miscellaneous/convert-mathjax.html">
+            
+                <a href="../miscellaneous/convert-mathjax.html">
+            
+                    
+                    convert mathjax
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.3" data-path="../miscellaneous/hashmap.html">
+            
+                <a href="../miscellaneous/hashmap.html">
+            
+                    
+                    hashmap
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.1.4" data-path="../miscellaneous/linkedhashmap.html">
+            
+                <a href="../miscellaneous/linkedhashmap.html">
+            
+                    
+                    linkedhashmap
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="divider"></li>
+        
+        
+    
+        <li class="chapter " data-level="7.1" data-path="../system/">
+            
+                <a href="../system/">
+            
+                    
+                    SYSTEM
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="7.1.1" data-path="../system/distributed-machine-learning.html">
+            
+                <a href="../system/distributed-machine-learning.html">
+            
+                    
+                    distributed machine learning
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >stereo matching</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <p>&#x5E73;&#x6ED1;&#x6027;&#x7EA6;&#x675F;&#x4E0B;&#x7684;&#x5168;&#x5C40;&#x4F18;&#x5316;&#x9879;&#xFF1A;</p>
+<p><img src="https://latex.codecogs.com/gif.latex?E%28d%29%3D%5Csum_%7Bp%5Cin%20V%7DU_p%28d_p%29+%5Csum_%7B%28p%2Cq%29%5Cin%20%5Cepsilon%7D%20B_%7Bpq%7D%28d_p%2Cd_q%29" alt="formula"></p>
+<p>&#x8FD9;&#x662F;&#x4E2A;&#x6574;&#x5F62;&#x4F18;&#x5316;&#x95EE;&#x9898;&#x3002;&#x5BF9;&#x4E8E;&#x4E00;&#x822C;&#x7684;&#x4E8C;&#x6B21;&#x4F2A;&#x5E03;&#x5C14;&#x4F18;&#x5316;</p>
+<p><img src="https://latex.codecogs.com/gif.latex?E%28x%29%3D%5Csum%20E%28x_i%29%20+%20%5Csum%20E%28x_i%2Cx_j%29%3D%5Csum%20a_i%20x_i%20+%20%5Csum%20b_%7Bij%7Dx_ix_j%3D%5Csum_%7Bi%5Cin%20P%7Dp_ix_i-%5Csum_%7Bi%5Cin%20N%7Dp_i%5Coverline%7Bx%7D_i-%5Csum%20b_%7Bij%7Dx_i%5Coverline%7Bx%7D_j" alt="formula"></p>
+<p>&#x5176;&#x4E2D;<img src="https://latex.codecogs.com/gif.latex?x%5Cin%20%5C%7B0%2C1%5C%7D%2C%5Coverline%7Bx%7D%3D1-x%2CP%3D%5C%7Bi%7Cp_i%3E0%5C%7D%2CN%3D%5C%7Bi%7Cp_i%5Cle%200%5C%7D" alt="formula">&#xFF0C;&#x4EE4;</p>
+<p><img src="https://latex.codecogs.com/gif.latex?%5Cepsilon%3D%5C%7B%28s%2Cx_i%3B-p_i%29%7Ci%5Cin%20N%5C%7D%5Ccup%20%5C%7B%28x_i%2Ct%3Bp_i%29%7Ci%5Cin%20P%5C%7D%20%5Ccup%20%5C%7B%28x_i%2Cx_j%3B-b_%7Bij%7D%29%5C%7D" alt="formula"></p>
+<p>&#x6784;&#x5EFA;&#x7F51;&#x7EDC;&#x6D41;&#xFF0C;&#x6700;&#x5C0F;&#x5272;&#x5373;&#x4E3A;&#x6700;&#x5C0F;&#x80FD;&#x91CF;&#x3002;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x628A;&#x6574;&#x5F62;&#x4F18;&#x5316;&#x8F6C;&#x5316;&#x4E3A;&#x4F2A;&#x5E03;&#x5C14;&#x4F18;&#x5316;&#xFF0C;&#x6BD4;&#x5982;&#x622A;&#x65AD;&#x4EE4;</p>
+<p><img src="https://latex.codecogs.com/gif.latex?d%5EK%3D%20%5Cbegin%7Bequation%7D%20%5Cbegin%7Bcases%7D%200%2Cd%3CK%5C%5C%201%2Cd%5Cge%20K%20%5Cend%7Bcases%7D%20%5Cend%7Bequation%7D" alt="formula"></p>
+<p>&#x90A3;&#x4E48;<img src="https://latex.codecogs.com/gif.latex?d%3D%5Csum%20d%5Ei" alt="formula">&#xFF0C;&#x4F46;&#x8FD9;&#x4E48;&#x505A;&#x5F97;&#x5230;&#x7684;&#x80FD;&#x91CF;&#x5F0F;&#x4E0D;&#x4E00;&#x5B9A;&#x7B26;&#x5408;&#x5B50;&#x6A21;&#x6027;&#xFF0C;&#x6211;&#x4EEC;&#x5229;&#x7528;&#x8FED;&#x4EE3;&#x6CD5;&#x6765;&#x4F18;&#x5316;&#x8BE5;&#x6574;&#x5F62;&#xFF0C;&#x8BBE;&#x4E2D;&#x95F4;&#x8FED;&#x4EE3;&#x72B6;&#x6001;y&#x6709;&#x4F18;&#x5316;</p>
+<p><img src="https://latex.codecogs.com/gif.latex?E%28y%29%3D%5Csum%20E%28y_i%29+%20%5Csum%20E%28y_i%2Cy_j%29" alt="formula"></p>
+<p>&#x5B9A;&#x4E49;&#x4E00;&#x6B21;&#x79FB;&#x52A8;&#x4E3A;</p>
+<p><img src="https://latex.codecogs.com/gif.latex?y_i%3D%20%5Cbegin%7Bequation%7D%20%5Cbegin%7Bcases%7D%20%5Calpha%2Ci%3D%3Dj%5C%5C%20x_i%2Cotherwise%20%5Cend%7Bcases%7D%20%5Cend%7Bequation%7D" alt="formula"></p>
+<p>&#x53D8;&#x4E3A;&#x4F18;&#x5316;&#x5B50;&#x6A21;&#x5757;<img src="https://latex.codecogs.com/gif.latex?E%28y_i%7Cx_%7BD-i%7D%29" alt="formula">&#xFF0C;&#x8FD8;&#x53EF;&#x4EE5;&#x6709;&#x5176;&#x4ED6;&#x79FB;&#x52A8;&#x6CD5;&#xFF0C;&#x5982;<img src="https://latex.codecogs.com/gif.latex?%5Calpha" alt="formula">&#x6269;&#x5C55;</p>
+<p><img src="https://latex.codecogs.com/gif.latex?y_i%3D%20%5Cbegin%7Bequation%7D%20%5Cbegin%7Bcases%7D%20%5Calpha%2Cx_i%3D%3D%5Calpha%20%5C%5C%20x_i/%5Calpha%2Cotherwise%20%5Cend%7Bcases%7D%20%5Cend%7Bequation%7D" alt="formula"></p>
+<p><img src="https://latex.codecogs.com/gif.latex?%5Calpha%5Cbeta" alt="formula">&#x4EA4;&#x6362;</p>
+<p><img src="https://latex.codecogs.com/gif.latex?y_i%3D%20%5Cbegin%7Bequation%7D%20%5Cbegin%7Bcases%7D%20%5Calpha/%5Cbeta%2Cx_i%3D%3D%5Cbeta/%5Calpha%20%5C%5C%20x_i%2Cotherwise%20%5Cend%7Bcases%7D%20%5Cend%7Bequation%7D" alt="formula"></p>
+<p><img src="https://latex.codecogs.com/gif.latex?%5Calpha" alt="formula">&#x6269;&#x5C55;<img src="https://latex.codecogs.com/gif.latex?%5Cbeta" alt="formula">&#x6536;&#x7F29;</p>
+<p><img src="https://latex.codecogs.com/gif.latex?y_i%3D%20%5Cbegin%7Bequation%7D%20%5Cbegin%7Bcases%7D%20%5Calpha/%5Cbeta%2Cx_i%3D%3D%5Calpha%20%5C%5C%20%5Calpha/x_i%2Cotherwise%20%5Cend%7Bcases%7D%20%5Cend%7Bequation%7D" alt="formula"></p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="lane-detection.html" class="navigation navigation-prev " aria-label="Previous page: lane detection">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="lidar-fusion.html" class="navigation navigation-next " aria-label="Next page: lidar fusion">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"stereo matching","level":"3.1.2","depth":2,"next":{"title":"lidar fusion","level":"3.1.3","depth":2,"path":"computer-vision/lidar-fusion.md","ref":"computer-vision/lidar-fusion.md","articles":[]},"previous":{"title":"lane detection","level":"3.1.1","depth":2,"path":"computer-vision/lane-detection.md","ref":"computer-vision/lane-detection.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"computer-vision/stereo-matching.md","mtime":"2020-08-09T10:08:07.000Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-10-19T07:00:31.083Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
