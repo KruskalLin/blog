@@ -569,6 +569,188 @@ For **between-graph replication** (Figure 1(b)), multiple machines run a client 
 
 
 
+## Framework Containing Actor
+
+### Ray
+
+**Future**
+
+```python
+import ray
+ray.init()
+
+@ray.remote
+def f(x):
+    return x * x
+
+futures = [f.remote(i) for i in range(4)]
+print(ray.get(futures)) # [0, 1, 4, 9]
+```
+
+
+
+**Actor**
+
+```python
+import ray
+ray.init() # Only call this once.
+
+@ray.remote
+class Counter(object):
+    def __init__(self):
+        self.n = 0
+
+    def increment(self):
+        self.n += 1
+
+    def read(self):
+        return self.n
+
+counters = [Counter.remote() for i in range(4)]
+[c.increment.remote() for c in counters]
+futures = [c.read.remote() for c in counters]
+print(ray.get(futures)) # [1, 1, 1, 1]
+```
+
+#### Architecture
+
+![ray-architecture](img/ray-architecture.png)
+
+*Task* - A single function invocation that executes on a process different from the caller. A task can be stateless (a `@ray.remote` function) or stateful (a method of a `@ray.remote` class - see *Actor* below). A task is executed asynchronously with the caller: the `.remote()` call immediately returns an `ObjectRef` that can be used to retrieve the return value.
+
+*Object* - An application value. This may be returned by a task or created through `ray.put`. Objects are **immutable**: they cannot be modified once created. A worker can refer to an object using an `ObjectRef`.
+
+*Actor* - a stateful worker process (an instance of a `@ray.remote` class). Actor tasks must be submitted with a *handle*, or a Python reference to a specific instance of an actor.
+
+*Driver* - The program root. This is the code that runs `ray.init()`.
+
+*Job* - The collection of tasks, objects, and actors originating (recursively) from the same driver.
+
+A Ray instance consists of one or more worker **nodes**, each of which consists of the following physical processes:
+
+- One or more **worker processes**, responsible for task submission and execution. A worker process is either stateless (can execute any @ray.remote function) or an actor (can only execute methods according to its @ray.remote class). Each worker process is associated with a specific job. The default number of initial workers is equal to the number of CPUs on the machine. Each worker stores:
+  - An **ownership table**. System metadata for the objects to which the worker has a reference, e.g., to store ref counts.
+  - An ***in-process store***, used to store small objects.
+- A **raylet**. The raylet is shared among all jobs on the same cluster. The raylet has two main threads:
+  - A **scheduler**. Responsible for resource management and fulfilling task arguments that are stored in the distributed object store. The individual schedulers in a cluster comprise the Ray **distributed scheduler**.
+  - A **shared-memory object store (also known as the** [**Plasma Object Store**](https://docs.ray.io/en/stable/plasma-object-store.html)**)**. Responsible for storing and transferring large objects. The individual object stores in a cluster comprise the Ray **distributed object store**.
+
+Each worker process and raylet is assigned a unique 20-byte identifier and an IP address and port. The same address and port can be reused by subsequent components (e.g., if a previous worker process dies), but the unique IDs are never reused (i.e., they are tombstoned upon process death). Worker processes fate-share with their local raylet process.
+
+One of the worker nodes is designated as the **head node**. In addition to the above processes, the head node also hosts:
+
+- The **Global Control Store (GCS)**. The GCS is a key-value server that contains system-level metadata, such as the locations of objects and actors. There is an ongoing effort to support high availability for the GCS, so that it may run on any and multiple nodes, instead of a designated head node.
+- The **driver process(es)**. A driver is a special worker process that executes the top-level application (e.g., `__main__` in Python). It can submit tasks, but cannot execute any itself. Driver processes can run on any node, but by default are located on the head node when running with the Ray autoscaler.
+
+
+
+Protocol overview (mostly over gRPC):
+
+- a: Task execution, object reference counting.
+- b: Local resource management.
+- c: Remote/distributed resource management.
+- d: Distributed object transfer.
+- e: Location lookup for objects stored in distributed object store.
+- f: Storage and retrieval of large objects. Retrieval is via `ray.get` or during task execution, when replacing a task’s ObjectID argument with the object’s value.
+- g: Scheduler fetches objects from remote nodes to fulfill dependencies of locally queued tasks.
+
+
+
+#### Ownership
+
+![img](img/ray-graph.jpg)
+
+Most of the system metadata is managed according to a decentralized concept called *ownership*: Each worker process manages and *owns* the tasks that it submits and the `ObjectRef`s returned by those tasks. The owner is responsible for ensuring execution of the task and facilitating the resolution of an `ObjectRef` to its underlying value. Similarly, a worker owns any objects that it created through a `ray.put` call.
+
+
+
+#### Lifetime of a Task
+
+![worker](img/ray-worker.png)
+
+When a task is submitted, the owner waits for any dependencies, i.e. `ObjectRef`s that were passed as an argument to the task (see Lifetime of an Object), to become available. Note that the dependencies need not be local; the owner considers the dependencies to be ready as soon as they are available anywhere in the cluster. When the dependencies are ready, the owner requests resources from the distributed scheduler to execute the task. Once resources are available, the scheduler grants the request and responds with the address of a worker that is now leased to the owner.
+
+The owner schedules the task by sending the task specification over gRPC to the leased worker. After executing the task, the worker must store the return values. If the return values are small, the worker returns the values inline directly to the owner, which copies them to its in-process object store. If the return values are large, the worker stores the objects in its local shared memory store and replies to the owner indicating that the objects are now in distributed memory. This allows the owner to refer to the objects without having to fetch the objects to its local node.
+
+When a task is submitted with an `ObjectRef` as its argument, the object value must be resolved before the worker can begin execution. If the value is small, it is copied directly from the owner’s in-process object store into the task description, where it can be referenced by the executing worker. If the value is large, the object must be fetched from distributed memory, so that the worker has a copy in its local shared memory store. The scheduler coordinates this object transfer by looking up the object’s locations and requesting a copy from a different node.
+
+
+
+#### Lifetime of an Object
+
+![object](img/ray-object.png)
+
+The owner of an object is the worker that created the initial `ObjectRef`, by submitting the creating task or calling `ray.put`. The owner manages the lifetime of the object. Ray guarantees that if the owner is alive, the object may eventually be resolved to its value (or an error is thrown in the case of worker failure). If the owner is dead, an attempt to get the object’s value will never hang but may throw an exception, even if there are still physical copies of the object.
+
+Each worker stores a ref count for the objects that it owns. See Reference Counting for more information on how references are tracked. References are only counted during these operations:
+
+- Passing an `ObjectRef` or an object that contains an `ObjectRef` as an argument to a task.
+- Returning an `ObjectRef` or an object that contains an `ObjectRef` from a task.
+
+Objects can be stored in the owner’s in-process memory store or in the distributed object store. This decision is meant to reduce the memory footprint and resolution time for each object.
+
+
+
+
+#### Lifetime of an Actor
+
+![actor](img/ray-actor.png)
+
+When an actor is created in Python, the creating worker first synchronously registers the actor with the GCS. This ensures correctness in case the creating worker fails before the actor can be created. Once the GCS responds, the remainder of the actor creation process is asynchronous. The creating worker process queues locally a special task known as the actor creation task. This is similar to a normal non-actor task, except that its specified resources are acquired for the lifetime of the actor process. The creator asynchronously resolves the dependencies for the actor creation task, then sends it to the GCS service to be scheduled. Meanwhile, the Python call to create the actor immediately returns an “actor handle” that can be used even if the actor creation task has not yet been scheduled. See Actor Creation for more details.
+
+Task execution for actors is similar to that of normal tasks: they return futures, are submitted directly to the actor process via gRPC, and will not run until all `ObjectRef` dependencies have been resolved. There are two main differences:
+
+- Resources do not need to be acquired from the scheduler to execute an actor task. This is because the actor has already been granted resources for its lifetime, when its creation task was scheduled.
+- For each caller of an actor, the tasks are executed in the same order that they are submitted.
+
+
+
+#### Object Management
+
+![ray-object-manage](img\ray-object-manage.png)
+
+In general, small objects are stored in their owner’s **in-process store** while large objects are stored in the **distributed object store**. This decision is meant to reduce the memory footprint and resolution time for each object. Note that in the latter case, a placeholder object is stored in the in-process store to indicate the object has been *promoted to shared memory*.
+
+Objects in the in-process store can be resolved quickly through a direct memory copy but may have a higher memory footprint when referenced by many processes due to the additional copies. The capacity of a single worker’s in-process store is also limited to the memory capacity of that machine, limiting the total number of such objects that can be in reference at any given time. For objects that are referenced many times, throughput may also be limited by the processing capacity of the owner process.
+
+In contrast, resolution of an object in the distributed object store requires at least one IPC from the worker to the worker’s local shared memory store. Additional RPCs may be required if the worker’s local shared memory store does not yet contain a copy of the object. On the other hand, because the shared memory store is implemented with shared memory, multiple workers on the same node can reference the same copy of an object. This can reduce the overall memory footprint if an object can be [deserialized with zero copies](https://docs.ray.io/en/master/serialization.html#serialization). The use of distributed memory also allows a process to reference an object without having the object local, meaning that a process can reference objects whose total size exceeds the memory capacity of a single machine. Finally, throughput can scale with the number of nodes in the distributed object store, as multiple copies of an object may be stored at different nodes.
+
+![ray-resolution](img\ray-resolution.png)
+
+Resolving a large object. The object x is initially created on Node 2, e.g., because the task that returned the value ran on that node. This shows the steps when the owner (the caller of the task) calls `ray.get`: 1) Lookup object’s locations in the GCS. 2) Select a location and send a request for a copy of the object. 3) Receive the object.
+
+![ray-memory](img\ray-memory.png)
+
+*Primary copy versus evictable copies. The primary copy (Node 2) is ineligible for eviction. However, the copies on Nodes 1 (created through `ray.get`) and 3 (created through task submission) can be evicted under memory pressure.*
+
+
+
+#### Resource Management and Scheduling
+
+A resource in Ray is any “key” -> float quantity. For convenience, the Ray scheduler has native support for CPU, GPU, and memory resource types, meaning that Ray automatically detects physical availability of these resources on each node. However, the user may also define custom resource requirements using any valid string, e.g., specifying a resource requirement of {“something”: 1}.
+
+![img](img/ray-task.png)
+
+The owner waits for all task arguments to be created before requesting resources from the distributed scheduler. For example, for a program like `foo.remote(bar.remote())`, the owner will not schedule `foo` until `bar` has completed.
+
+An owner schedules a task by first sending a resource request to its local raylet. The raylet queues the request and if it chooses to grant the resources, responds to the owner with the address of a local worker that is now *leased* to the owner. The lease remains active as long as the owner and leased worker are alive, and the raylet ensures that no other client may use the worker while the lease is active. To ensure fairness, an owner returns the worker if no work remains or if enough time has passed (e.g., a few hundred milliseconds).
+
+![img](img/ray-schedule.png)
+
+
+
+#### Actor management
+
+![img](img/ray-actor-schedule.png)
+
+When an actor is created in Python, the creating worker first synchronously registers the actor with the GCS. This ensures that in the case that the creating worker dies before the actor can be created, any workers with a reference to the actor will be able to discover the failure.
+
+Once all of the input dependencies for an actor creation task are resolved, the creator then sends the task specification to the GCS service. The GCS service then schedules the actor creation task through the same [distributed scheduling protocol](https://docs.google.com/document/d/1lAy0Owi-vPz2jEqBSaHNQcy2IBSDEHyXNOQZlGuj93c/preview#heading=h.jamwh5yjnwj9) that is used for normal tasks, as if the GCS were the actor creation task’s owner. Because the GCS service persists all state to the backing store, once the task specification has successfully been sent to the GCS service, the actor will eventually be created.
+
+
+
+
+
 [1] [DistBelief: Large Scale Distributed Deep Networks](https://static.googleusercontent.com/media/research.google.com/zh-CN//archive/large_deep_networks_nips2012.pdf)
 
 [2] [MPI Reduce and Allreduce](https://mpitutorial.com/tutorials/mpi-reduce-and-allreduce/)
